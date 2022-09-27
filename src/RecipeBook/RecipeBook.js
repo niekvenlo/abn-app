@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { RecipeSection } from "./RecipeSection";
 import { SearchSection } from "./SearchSection";
 
 export function RecipeBook() {
-  const { data } = useQuery(["random"]);
-  const displayRecipe = data?.[0];
+  const { data: randomRecipes } = useQuery(["random"]);
+  const randomRecipe = randomRecipes?.[0];
+  const [recipe, setRecipe] = useState();
+
   return (
     <div
       style={{
@@ -15,10 +18,10 @@ export function RecipeBook() {
       }}
     >
       <div style={{ flex: 0, backgroundColor: "var(--abn-light-green)" }}>
-        <SearchSection />
+        <SearchSection setRecipe={setRecipe} />
       </div>
       <div style={{ flex: 1, backgroundColor: "var(--abn-light-yellow)" }}>
-        <RecipeSection recipe={displayRecipe} />
+        <RecipeSection recipe={recipe || randomRecipe} />
       </div>
     </div>
   );

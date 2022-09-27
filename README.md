@@ -7,4 +7,5 @@ I installed two additional dependencies:
 - `npm install @tanstack/react-query`, to manage server state;
 - `npm install use-query-params`, to manage query string state in the url.
 
-I did not use a CSS-in-JS library, although of course typically I would in practical apps.
+I did not use a CSS-in-JS library, although of course typically I would in practical apps. I liked using Chakra UI, but didn't think it would a good idea to confuse this
+project.
