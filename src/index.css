@@ -1,6 +1,7 @@
 html {
   --abn-dark-green: #004d41;
   --abn-light-green: #00ab95;
+  --abn-translucent-green: #00ab942e;
   --abn-grey-green: #007066;
   --abn-light-yellow: #e5b50a;
   --abn-grey-yellow: #bd960b;
@@ -8,11 +9,12 @@ html {
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: "Nunito", "Carrara", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 13px;
 }
 
 code {

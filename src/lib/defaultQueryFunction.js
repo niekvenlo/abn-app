@@ -4,12 +4,15 @@
 // - `useQuery(['search', {s: 'Pie'}])` to fetch recipes matching the string 'Pie'.
 export async function defaultQueryFunction({ queryKey }) {
   const response = await fetch(getUrl(queryKey));
-  const data = await response.json();
-  return data?.meals ?? [];
+  try {
+    const data = await response.json();
+    return data?.meals ?? [];
+  } catch (err) {
+    return [];
+  }
 
   // This function should be hardened.
   function getUrl(queryKey) {
-    console.log(queryKey);
     const baseUrl = `https://www.themealdb.com/api/json/v1/1/`;
     if (typeof queryKey[queryKey.length - 1] !== "object") {
       return `${baseUrl}${queryKey.join("/")}.php`;
