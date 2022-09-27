@@ -18,17 +18,10 @@ export function SearchSection({ recipeId, setRecipe, scrollToRecipe }) {
           justifyContent: "end",
           gap: "1em",
           background: "var(--abn-light-green)",
+          padding: "0.2em",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <div />
-          <SetQuery onChange={setQuery} />
-        </div>
+        <SetQuery onChange={setQuery} />
       </div>
       <Results
         query={query}
@@ -43,32 +36,26 @@ export function SearchSection({ recipeId, setRecipe, scrollToRecipe }) {
 function SetQuery({ onChange }) {
   const [query, setQuery] = useState("");
   return (
-    <>
+    <div className="recipe-query">
+      <div />
       <input
-        type="text"
-        value={query}
-        placeholder="Enter text to search"
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={(e) => {
           if (e.key.includes("Enter")) {
             onChange(query);
           }
         }}
-        style={{ flexGrow: 1, fontSize: "1.2em", margin: "0.1em" }}
+        placeholder="e.g. fish"
+        type="search"
+        value={query}
       />
       <input
         onClick={() => onChange(query)}
-        style={{
-          flexGrow: 1,
-          fontSize: "1.2em",
-          margin: "0.1em",
-          background: "var(--abn-light-yellow)",
-          border: "none",
-        }}
+        title="search"
         type="submit"
-        value="Search"
+        value="🔍"
       />
-    </>
+    </div>
   );
 }
 
@@ -78,47 +65,28 @@ function Results({ query, recipeId, setRecipe, scrollToRecipe }) {
     return null;
   }
   return (
-    <div style={{ padding: "1em" }}>
-      <ul
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "0.5em",
-          justifyContent: "center",
-          padding: 0,
-        }}
-      >
-        {matchingRecipes?.map((recipe) => (
-          <li
-            key={recipe["strMeal"]}
-            style={{
-              background:
-                recipeId === recipe["idMeal"]
-                  ? "var(--abn-light-yellow)"
-                  : "var(--abn-light-green)",
-              border:
-                recipeId === recipe["idMeal"]
-                  ? "2px solid var(--abn-light-yellow)"
-                  : "2px solid var(--abn-light-green)",
-              color: "white",
-              cursor: "pointer",
-              listStyleType: "none",
-              width: "100px",
-            }}
-            onClick={() => {
-              scrollToRecipe();
-              setRecipe(recipe);
-            }}
-          >
-            <img
-              alt=""
-              src={recipe["strMealThumb"]}
-              style={{ width: "100%" }}
-            />
-            <span style={{ padding: "0.1em" }}>{recipe["strMeal"]}</span>
-          </li>
-        ))}
-      </ul>
+    <div className="recipe-search-results">
+      {matchingRecipes?.length > 0 ? (
+        <ul>
+          {matchingRecipes.map((recipe) => (
+            <li
+              key={recipe["strMeal"]}
+              className={recipeId === recipe["idMeal"] ? "selected" : ""}
+              onClick={() => {
+                scrollToRecipe();
+                setRecipe(recipe);
+              }}
+            >
+              <img alt="" src={`${recipe["strMealThumb"]}/preview`} />
+              <span>{recipe["strMeal"]}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="recipe-search-results-no-results">
+          {matchingRecipes ? `No results for "${query}"` : `Searching...`}
+        </div>
+      )}
     </div>
   );
 }

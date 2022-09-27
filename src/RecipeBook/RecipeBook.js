@@ -16,22 +16,18 @@ export function RecipeBook() {
     });
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-        justifyItems: "stretch",
-      }}
-    >
-      <div style={{ flex: 0, backgroundColor: "var(--abn-translucent-green)" }}>
+    <div className="recipe-book">
+      <div style={{ flex: 0 }}>
         <SearchSection
-          recipeId={recipe["idMeal"]}
+          recipeId={recipe?.["idMeal"]}
           setRecipe={setRecipe}
           scrollToRecipe={scrollToRecipe}
         />
       </div>
-      <div ref={scrollRef} style={{ flex: 1, backgroundColor: "white" }}>
+      <div
+        ref={scrollRef}
+        style={{ flex: 1, backgroundColor: "white", minHeight: "100vh" }}
+      >
         <RecipeSection recipe={recipe || randomRecipe} />
       </div>
     </div>
