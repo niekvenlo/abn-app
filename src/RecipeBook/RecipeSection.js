@@ -1,4 +1,11 @@
-export function RecipeSection({ recipe }) {
+import { useQuery } from "@tanstack/react-query";
+
+export function RecipeSection({ recipeId, randomRecipe }) {
+  const { data: mealsById } = useQuery(["lookup", { i: recipeId }], {
+    enabled: !!recipeId,
+  });
+
+  const recipe = mealsById?.[0] ?? randomRecipe;
   if (!recipe) {
     return "loading";
   }
@@ -38,7 +45,7 @@ export function RecipeSection({ recipe }) {
 function getInstructions(recipe) {
   return (
     <p className="recipe-instructions">
-      {recipe["strInstructions"].replace(/[\n\r]+/g, "\n\n")}
+      {recipe["strInstructions"]?.replace(/[\n\r]+/g, "\n\n")}
     </p>
   );
 }

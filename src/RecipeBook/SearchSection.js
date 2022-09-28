@@ -1,80 +1,87 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-export function SearchSection({ recipeId, setRecipe, scrollToRecipe }) {
+export function SearchSection({ recipeId, setRecipeId, scrollToRecipe }) {
   const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("");
+  const setCategoryAndResetQuery = (string) => {
+    setCategory(string);
+    setQuery("");
+  };
+  const setQueryAndResetCategory = (string) => {
+    setCategory("");
+    setQuery(string);
+  };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "end",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "end",
-          gap: "1em",
-          background: "var(--abn-light-green)",
-          padding: "0.2em",
-        }}
-      >
-        <SetQuery onChange={setQuery} />
+    <div style={{ background: "var(--abn-light-green)" }}>
+      <div className="recipe-query">
+        <h1
+          style={{
+            paddingLeft: "0.5em",
+            margin: 0,
+          }}
+        >
+          The ABN AMRO Guide to Global Flavours
+        </h1>
+        <div>
+          <input
+            onChange={(e) => setQueryAndResetCategory(e.target.value)}
+            placeholder="e.g. fish"
+            type="search"
+            value={query}
+          />{" "}
+        </div>
       </div>
+      <Categories category={category} setCategory={setCategoryAndResetQuery} />
       <Results
+        category={category}
         query={query}
         recipeId={recipeId}
-        setRecipe={setRecipe}
+        setRecipeId={setRecipeId}
         scrollToRecipe={scrollToRecipe}
       />
     </div>
   );
 }
 
-function SetQuery({ onChange }) {
-  const [query, setQuery] = useState("");
+function Categories({ category, setCategory }) {
+  const { data: categories } = useQuery(["list", { c: "list" }]);
+  const categoryStrings = categories?.map((cat) => cat["strCategory"]) ?? [];
+
   return (
-    <div className="recipe-query">
-      <div />
-      <input
-        onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key.includes("Enter")) {
-            onChange(query);
-          }
-        }}
-        placeholder="e.g. fish"
-        type="search"
-        value={query}
-      />
-      <input
-        onClick={() => onChange(query)}
-        title="search"
-        type="submit"
-        value="🔍"
-      />
+    <div className="recipe-categories">
+      {categoryStrings.map((cat) => (
+        <button
+          className={category === cat ? "selected" : ""}
+          key={cat}
+          onClick={() => setCategory(cat)}
+        >
+          {cat}
+        </button>
+      ))}
     </div>
   );
 }
 
-function Results({ query, recipeId, setRecipe, scrollToRecipe }) {
-  const { data: matchingRecipes } = useQuery(["search", { s: query }]);
-  if (!query) {
+function Results({ category, query, recipeId, setRecipeId, scrollToRecipe }) {
+  const { data: matchingQuery = [] } = useQuery(["search", { s: query }]);
+  const { data: matchingCategory = [] } = useQuery(["filter", { c: category }]);
+  if (!query && !category) {
     return null;
   }
+  const results = [...matchingCategory, ...matchingQuery];
   return (
     <div className="recipe-search-results">
-      {matchingRecipes?.length > 0 ? (
+      {results?.length > 0 ? (
         <ul>
-          {matchingRecipes.map((recipe) => (
+          {results.map((recipe) => (
             <li
               key={recipe["strMeal"]}
               className={recipeId === recipe["idMeal"] ? "selected" : ""}
               onClick={() => {
                 scrollToRecipe();
-                setRecipe(recipe);
+                setRecipeId(recipe["idMeal"]);
               }}
             >
               <img alt="" src={`${recipe["strMealThumb"]}/preview`} />
@@ -84,7 +91,7 @@ function Results({ query, recipeId, setRecipe, scrollToRecipe }) {
         </ul>
       ) : (
         <div className="recipe-search-results-no-results">
-          {matchingRecipes ? `No results for "${query}"` : `Searching...`}
+          {results ? `No results for "${query}"` : `Searching...`}
         </div>
       )}
     </div>
